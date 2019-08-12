@@ -7,10 +7,7 @@ Created on Mon Aug 12 15:38:14 2019
 """
 try:
     from numpy import array, transpose
-    import os
-    import cv2
     import pandas as pd
-    from multiprocessing import Process
     from sklearn.model_selection import cross_val_score, cross_validate
     from time import time
     from sklearn.svm import SVC
@@ -113,6 +110,7 @@ def main():
         'degree': [2, 3]
     }
 
+    #Testando...
     gs = MyGridSearch(model=svm, grid_params=grid_params, cv=2, metrics=metrics)
 
     x = array([[2,1,2,2], [3,2,4,3], [5,4,4,3], [3,4,6,6], [6,5,5,4], [3,2,8,7], [5,3,4,5], [6,2,1,7], [2,1,2,1], [8,4,4,3], [6,4,3,2], [4,3,4,3]])
