@@ -27,10 +27,10 @@ def fit_grid_search(x_train, y_train, out):
     '''
 
     param_grid = {
-        'C': [1], #, 5, 10, 20],
-        'gamma': [0.1], # , 0.001, 0.00001],
-        'kernel': ['rbf'], #, 'poly', 'linear', 'sigmoid'],
-        'degree': [2] #, 3]
+        'C': [10, 100, 200],
+        'gamma': [0.001, 0.00001],
+        'kernel': ['rbf', 'poly', 'linear', 'sigmoid'],
+        'degree': [2, 3]
     }
     
     metrics = ['f1_macro', 'accuracy', 'precision_macro','recall_macro']
@@ -42,7 +42,7 @@ def fit_grid_search(x_train, y_train, out):
                              cv=5, \
                              n_jobs=-1,
                              verbose=100)
-        
+
     grid_search.fit(x_train, y_train)
         
     print(100 * '.')
