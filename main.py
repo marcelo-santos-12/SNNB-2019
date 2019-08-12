@@ -55,7 +55,6 @@ def main():
     #TREINAMENTO
     
     train_time = time()
-
     for out in OUTDIR_FEATURES: #para cada uma das pastas com os recursos computados
         print('Organizando dados de treinamento de \'/{}\'...'.format(out))
         path_csv = out
@@ -65,7 +64,26 @@ def main():
         print('Treinando SVM com {}...'.format(out))
         init_train_time = time()
         
-        fit_grid_search(x_train, y_train, out)
+        svm = SVC()
+
+        metrics = ['f1_macro', 'accuracy', 'precision_macro','recall_macro']
+
+        grid_params = {
+            'C': [1, 10, 50, 100],
+            'kernel': ['rbf', 'linear', 'poly', 'sigmoid'],
+            'gamma': [0.0001, 0.00001, 0.000001],
+            'degree': [2, 3]
+        }
+
+        gs = MyGridSearch(model=svm, grid_params=grid_params, cv=5, metrics=metrics)
+        results, params = gs.fit(x_train, y_train)
+
+        df_results = pd.DataFrame(results)
+        df_params = pd.DataFrame(params)
+        df_conc = pd.concat([df_results, df_params], axis=1)
+        df_conc.to_csv(out + '_resultados.csv')
+        print(100 * '.')
+        print(results)
 
         print('Tempo treinamento com \'/{}\': {}s'.format(out, time() - init_train_time))
     
