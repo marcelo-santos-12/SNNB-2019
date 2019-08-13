@@ -12,6 +12,7 @@ try:
     from utils.get_descriptor_images import *
     from utils.get_classifiers import *
     from utils.get_data import *
+    from utils.myGridSearch import MyGridSearch
 
 except Exception as e:
     print('Alguns módulos não foram instalados...')
