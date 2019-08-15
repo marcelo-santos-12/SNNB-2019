@@ -17,8 +17,8 @@ except Exception as e:
     raise Exception('Modulos não instalados')
 
 def main():
-    df_lbp = pd.read_csv('lbp_features_resultados.csv')
-    df_hog = pd.read_csv('hog_features_resultados.csv')
+    df_lbp = pd.read_csv('resultados/lbp_features_resultados.csv')
+    df_hog = pd.read_csv('resultados/hog_features_resultados.csv')
 
     #nome com os parametros do SVM
     name_col_params = ['c', 'degree', 'gamma', 'kernel']
@@ -28,10 +28,6 @@ def main():
     
     #colunas desnecessarias
     name_delete_columns = ['Unnamed: 0', 'fit_time', 'score_time']
-    
-    path_out = 'resultados'
-    if not os.path.exists(path_out):
-        os.makedirs(path_out)
 
     #apangando colunas desnecessarias
     for name_column in name_delete_columns:

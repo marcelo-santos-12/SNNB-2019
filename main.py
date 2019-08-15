@@ -13,6 +13,9 @@ try:
     from utils.get_classifiers import *
     from utils.get_data import *
     from utils.myGridSearch import MyGridSearch
+    path_out = 'resultados'
+    if not os.path.exists(path_out):
+        os.makedirs(path_out)
 
 except Exception as e:
     print('Alguns módulos não foram instalados...')
@@ -82,7 +85,7 @@ def main():
         df_results = pd.DataFrame(results)
         df_params = pd.DataFrame(params)
         df_conc = pd.concat([df_results, df_params], axis=1)
-        df_conc.to_csv(out + '_resultados.csv')
+        df_conc.to_csv(path_out +'/'+out + '_resultados.csv')
         print(100 * '.')
         print(results)
 
