@@ -71,7 +71,7 @@ def main():
 
             df_feature[col_name] = list_values_column
 
-        df_feature.to_csv(path_out +'/'+name_descriptor + '_mean_results.csv', index=False)
+        df_feature.to_csv('resultados/'+name_descriptor + '_mean_results.csv', index=False)
 
     for df_feature, name_descriptor in df_features:
         filter_linear = df_feature['kernel'] == 'linear'
@@ -140,7 +140,7 @@ def main():
 
             #fig.show()
 
-            plotly.offline.plot(fig, filename = path_out + '/' +name_metric+'_'+name_descriptor+'.html', auto_open=False)
+            plotly.offline.plot(fig, filename = 'resultados/'+name_metric+'_'+name_descriptor+'.html', auto_open=False)
 
 if __name__ == '__main__':
 
