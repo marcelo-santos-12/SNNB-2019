@@ -40,7 +40,7 @@ def main():
     #lista que contem os DataFrames
     df_features = [[df_lbp, 'lbp'], [df_hog, 'hog']]
 
-    for df_feature, _ in df_features:
+    for df_feature, name_descriptor in df_features:
         
         for col_name in df_feature.columns:
             
@@ -71,6 +71,8 @@ def main():
 
             df_feature[col_name] = list_values_column
 
+        df_feature.to_csv(name_descriptor + '_mean_results.csv', index=False)
+
     for df_feature, name_descriptor in df_features:
         filter_linear = df_feature['kernel'] == 'linear'
         df_linear = df_feature.where(filter_linear)
@@ -100,7 +102,7 @@ def main():
         df_rbf = df_feature.where(filter_rbf)
         df_rbf = df_rbf.dropna(axis=1, how='all') 
         df_rbf = df_rbf.dropna()
-        
+
         for name_metric in name_col_metrics:
             fig = go.Figure()
             
