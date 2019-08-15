@@ -29,6 +29,10 @@ def main():
     #colunas desnecessarias
     name_delete_columns = ['Unnamed: 0', 'fit_time', 'score_time']
     
+    path_out = 'resultados'
+    if not os.path.exists(path_out):
+        os.makedirs(path_out)
+
     #apangando colunas desnecessarias
     for name_column in name_delete_columns:
         df_lbp = df_lbp.drop(name_column, axis=1)
@@ -71,7 +75,7 @@ def main():
 
             df_feature[col_name] = list_values_column
 
-        df_feature.to_csv(name_descriptor + '_mean_results.csv', index=False)
+        df_feature.to_csv(path_out +'/'+name_descriptor + '_mean_results.csv', index=False)
 
     for df_feature, name_descriptor in df_features:
         filter_linear = df_feature['kernel'] == 'linear'
@@ -139,9 +143,6 @@ def main():
             fig.update_layout(title=name_metric.replace('test_', ' ').replace('_', ' ').replace('macro', '').upper() + ' (x = C , y = gamma)')
 
             #fig.show()
-            path_out = 'resultados'
-            if not os.path.exists(path_out):
-                os.makedirs(path_out)
 
             plotly.offline.plot(fig, filename = path_out + '/' +name_metric+'_'+name_descriptor+'.html', auto_open=False)
 
