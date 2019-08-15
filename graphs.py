@@ -5,11 +5,12 @@ Created on Wed Aug 30 14:59:14 2019
 
 @author: marcelo
 """
-
 try:
     import pandas as pd
+    import plotly
+    import plotly.graph_objects as go
+    import os
     import numpy as np
-    import matplotlib.pyplot as plt
 
 except Exception as e:
     print(e)
@@ -21,9 +22,13 @@ def main():
 
     #nome com os parametros do SVM
     name_col_params = ['c', 'degree', 'gamma', 'kernel']
+
+    #nome com as metricas utilizadas
+    name_col_metrics = ['test_accuracy', 'test_f1_macro', 'test_precision_macro', 'test_recall_macro']
     
     #colunas desnecessarias
     name_delete_columns = ['Unnamed: 0', 'fit_time', 'score_time']
+    
     #apangando colunas desnecessarias
     for name_column in name_delete_columns:
         df_lbp = df_lbp.drop(name_column, axis=1)
@@ -33,11 +38,9 @@ def main():
     print('Colunas HOG: ', df_hog.columns)
 
     #lista que contem os DataFrames
-    df_features = [df_lbp, df_hog]
+    df_features = [[df_lbp, 'lbp'], [df_hog, 'hog']]
 
-
-    for df_feature in df_features:
-        df_aux = pd.DataFrame()
+    for df_feature, _ in df_features:
         
         for col_name in df_feature.columns:
             
@@ -61,17 +64,84 @@ def main():
                 float_array = map(float, list_)
                 float_array = list(float_array)
                 float_array = np.array(float_array)
-                
+
                 float_mean_array = float_array.mean().round(3)
 
                 list_values_column.append(float_mean_array)
-            
-            df_aux['mean_' + col_name] = list_values_column
 
-        print(df_aux)
+            df_feature[col_name] = list_values_column
+
+    for df_feature, name_descriptor in df_features:
+        filter_linear = df_feature['kernel'] == 'linear'
+        df_linear = df_feature.where(filter_linear)
+        df_linear = df_linear.dropna(axis=1, how='all') 
+        df_linear = df_linear.dropna()
         
+        filter_poly2 = df_feature['kernel'] == 'poly'
+        df_poly2 = df_feature.where(filter_poly2)
+        filter_poly2 = df_feature['degree'] == 2
+        df_poly2 = df_poly2.where(filter_poly2)
+        df_poly2 = df_poly2.dropna()
+        df_poly2 = df_poly2.drop('degree', axis=1)
+        
+        filter_poly3 = df_feature['kernel'] == 'poly'
+        df_poly3 = df_feature.where(filter_poly3)
+        filter_poly3 = df_feature['degree'] == 3
+        df_poly3 = df_poly3.where(filter_poly3)
+        df_poly3 = df_poly3.dropna()
+        df_poly3 = df_poly3.drop('degree', axis=1)
+        
+        filter_sig = df_feature['kernel'] == 'sigmoid'
+        df_sigmoid = df_feature.where(filter_sig)
+        df_sigmoid = df_sigmoid.dropna(axis=1, how='all') 
+        df_sigmoid = df_sigmoid.dropna()
+        
+        filter_rbf = df_feature['kernel'] == 'rbf'
+        df_rbf = df_feature.where(filter_rbf)
+        df_rbf = df_rbf.dropna(axis=1, how='all') 
+        df_rbf = df_rbf.dropna()
+        
+        for name_metric in name_col_metrics:
+            fig = go.Figure()
+            
+            fig.add_trace(go.Scatter3d(
+            x=df_linear['c'],
+            y=[0,0,0,0],
+            z=df_linear[name_metric],
+            name='Linear', mode='markers'))
 
-    #PLOTAR C EM FUNCAO DE GAMMA, COM OS VALORES DAS METRICAS
+            fig.add_trace(go.Scatter3d(
+            x=df_poly2['c'],
+            y=df_poly2['gamma'],
+            z=df_poly2[name_metric],
+            name='Poly 2', mode='markers'))
+
+            fig.add_trace(go.Scatter3d(
+            x=df_poly3['c'],
+            y=df_poly3['gamma'],
+            z=df_poly3[name_metric],
+            name='Poly 3', mode='markers'))
+
+            fig.add_trace(go.Scatter3d(
+            x=df_sigmoid['c'],
+            y=df_sigmoid['gamma'],
+            z=df_sigmoid[name_metric],
+            name='Sigmoid', mode='markers'))
+
+            fig.add_trace(go.Scatter3d(
+            x=df_rbf['c'],
+            y=df_rbf['gamma'],
+            z=df_rbf[name_metric],
+            name='RBF', mode='markers'))
+
+            fig.update_layout(title=name_metric.replace('test_', ' ').replace('_', ' ').replace('macro', '').upper() + ' (x = C , y = gamma)')
+
+            #fig.show()
+            path_out = 'resultados'
+            if not os.path.exists(path_out):
+                os.makedirs(path_out)
+
+            plotly.offline.plot(fig, filename = path_out + '/' +name_metric+'_'+name_descriptor+'.html', auto_open=False)
 
 if __name__ == '__main__':
 
